@@ -3,7 +3,7 @@ require('dotenv').config({
 });
 
 const express = require('express');
-const cors = require('cors');
+const path = require('path');
 const multer = require('multer');
 const { PDFParse } = require('pdf-parse');
 const { CanvasFactory } = require('pdf-parse/worker');
@@ -14,6 +14,12 @@ const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
+app.use(express.static(path.join(__dirname, '..', 'dist', 'frontend')));
+app.get('/*', (req, res) => {
+  // If the request is for an API route, let Express handle it later
+  if (req.path.startsWith('/api/')) return;
+  res.sendFile(path.join(__dirname, '..', 'dist', 'frontend', 'index.html'));
+});
 
 app.get('/health', (req, res) => {
   res.json({ status: 'ok' });
