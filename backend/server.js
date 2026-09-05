@@ -6,6 +6,7 @@ const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
 const { PDFParse } = require('pdf-parse');
+const { CanvasFactory } = require('pdf-parse/worker');
 const { GoogleGenAI } = require('@google/genai');
 
 const app = express();
@@ -48,7 +49,7 @@ app.post('/api/reports/process', upload.single('report'), async (req, res) => {
       });
     }
 
-    const parser = new PDFParse({ data: req.file.buffer });
+    const parser = new PDFParse({ data: req.file.buffer, CanvasFactory });
     const result = await parser.getText();
     const extractedText = (result.text || '').trim();
 
