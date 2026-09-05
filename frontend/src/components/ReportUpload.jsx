@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react';
 import ProgressStepper from './ProgressStepper';
+import API_BASE from '../apiConfig';
 
 const STEPS = ['Patient Details', 'Upload Report', 'Processing', 'Results'];
 
@@ -180,12 +181,12 @@ export default function ReportUpload({ patient, onResult, onBack }) {
       // Step 1 — extract text from PDF
       const formData = new FormData();
       formData.append('report', file);
-      const processRes  = await fetch('/api/reports/process', { method: 'POST', body: formData });
+      const processRes  = await fetch(`${API_BASE}/api/reports/process`, { method: 'POST', body: formData });
       const processData = await processRes.json();
       if (!processData.success) { setError(processData.error || 'PDF processing failed'); return; }
 
       // Step 2 — AI extraction
-      const extractRes  = await fetch('/api/reports/extract', {
+      const extractRes  = await fetch(`${API_BASE}/api/reports/extract`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ text: processData.text }),
